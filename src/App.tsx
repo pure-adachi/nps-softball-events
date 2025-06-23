@@ -1,62 +1,110 @@
-import EventTimeline from "./components/EventTimeline";
 import bkimg from "./img/background.png";
+import { useEffect, useRef } from "react";
+
+const events = [
+  {
+    year: 2025,
+    title: "NPS CUP 2025",
+    status: "計画中",
+    description: "詳細は近日発表予定です。"
+  },
+  {
+    year: 2024,
+    title: "NPS CUP 2024",
+    status: "終了",
+    description:
+      "ご参加ありがとうございました！詳細は結果ページをご覧ください。"
+  }
+];
+
+// フェードイン用カスタムフック
+const useFadeInOnScroll = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    node.classList.add(
+      "opacity-0",
+      "translate-y-8",
+      "transition-all",
+      "duration-700"
+    );
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          node.classList.add("opacity-100", "translate-y-0");
+          node.classList.remove("opacity-0", "translate-y-8");
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+};
+
+// イベントカード用コンポーネント
+const EventCard = ({ event }: { event: (typeof events)[0] }) => {
+  const fadeRef = useFadeInOnScroll();
+  return (
+    <div
+      ref={fadeRef}
+      className="w-full max-w-xl mx-auto mb-10 bg-white/80 rounded-xl shadow-lg p-8 opacity-0 translate-y-8 transition-all duration-[1300ms] ease-in-out"
+    >
+      <h2 className="text-2xl font-bold text-blue-700 mb-2">{event.title}</h2>
+      <p className="text-blue-900">{event.description}</p>
+    </div>
+  );
+};
 
 const App = () => {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
-      {/* 横幅フルのSVG背景 */}
-      <div
-        className="absolute top-0 left-0 w-full h-[400px] z-0"
-        style={{ minWidth: "100vw", minHeight: 400 }}
-      >
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 1440 400"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ pointerEvents: "none" }}
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <clipPath id="curve-clip">
-              <path d="M0,100 Q400,200 900,80 T1440,180 L1440,0 L0,0 Z" />
-            </clipPath>
-          </defs>
-          <image
-            href={bkimg}
-            width="1440"
-            height="400"
-            clipPath="url(#curve-clip)"
-            preserveAspectRatio="xMidYMid slice"
-          />
-          <path
-            d="M0,100 Q400,200 900,80 T1440,180 L1440,0 L0,0 Z"
-            fill="#93c5fd"
-            opacity="0.25"
-          />
-          <path
-            d="M0,200 Q600,350 1440,120 L1440,0 L0,0 Z"
-            fill="#60a5fa"
-            opacity="0.18"
-          />
-        </svg>
-      </div>
-      {/* タイトルをSVGの明るい内側に絶対配置（ブロック背景なし） */}
-      <div className="absolute top-[120px] left-1/2 -translate-x-1/2 w-full flex flex-col items-center z-10 pointer-events-none">
-        <span className="inline-block px-4 py-1 bg-blue-700/90 text-white text-xs font-bold rounded-full tracking-widest shadow-md mb-2 drop-shadow-lg">
-          NPS杯
-        </span>
-        <h1 className="text-4xl md:text-5xl font-black text-blue-900 drop-shadow-lg">
-          ソフトボール大会
-        </h1>
-        <p className="text-lg mt-2 text-blue-900 drop-shadow">
-          企業交流を深めるスポーツイベント
-        </p>
-      </div>
-      <main className="px-4 md:px-8 lg:px-16 relative z-20 pt-[260px]">
-        <EventTimeline />
+      <img
+        src={bkimg}
+        className="fixed inset-0 w-full h-full object-cover opacity-50 pointer-events-none z-0"
+        alt="background"
+      />
+      <main className="relative z-20 flex flex-col items-center">
+        <section className="min-h-screen flex flex-col items-center justify-center w-full bg-transparent">
+          <span className="inline-block px-4 py-1 bg-blue-700/90 text-white text-xs font-bold rounded-full tracking-widest shadow-md mb-2 drop-shadow-lg">
+            NPS CUP
+          </span>
+          <h1
+            className="text-4xl md:text-5xl font-black text-blue-800 drop-shadow-2xl uppercase tracking-widest"
+            style={{ fontFamily: "'Bebas Neue', 'Montserrat', sans-serif" }}
+          >
+            Softball Tournament
+          </h1>
+          <p className="text-lg mt-2 text-blue-900 drop-shadow">
+            A sports event to deepen corporate exchange
+          </p>
+        </section>
+        <section className="w-full bg-white relative z-20 flex flex-col items-center pt-12 pb-24">
+          {events.map((event) => (
+            <EventCard key={event.year} event={event} />
+          ))}
+          <section className="w-full max-w-3xl mx-auto">
+            <h2 className="text-2xl font-semibold mb-6">イベント履歴</h2>
+            <ul className="space-y-6">
+              {events.map((event) => (
+                <li
+                  key={event.year}
+                  className="border-l-4 border-blue-500 pl-4"
+                >
+                  <div className="text-xl font-bold">{event.year}年度</div>
+                  <div className="text-sm text-blue-700 font-semibold mb-1">
+                    {event.status}
+                  </div>
+                  <p className="text-gray-700">{event.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </section>
       </main>
-      <footer className="text-center text-sm text-gray-500 py-6 relative z-20">
+      <footer className="w-full bg-white text-center text-sm text-gray-500 py-6 relative z-30">
         &copy; 2025 Softball Event Committee
       </footer>
     </div>
