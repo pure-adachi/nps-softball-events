@@ -45,7 +45,7 @@ const EventCard = ({ event }: { event: (typeof events)[0] }) => {
     <Link
       ref={fadeRef}
       to={`/events/${event.year}`}
-      className="w-full max-w-xl mx-auto mb-10 bg-white/80 rounded-xl p-8 shadow-lg opacity-0 translate-y-8 transition-all duration-[1300ms] ease-in-out"
+      className="w-[95%] sm:w-[90%] md:w-[80%] lg:w-[60%] xl:w-[50%] mx-auto mb-10 bg-white/80 rounded-xl p-8 shadow-lg opacity-0 translate-y-8 transition-all duration-[1300ms] ease-in-out"
     >
       <h2 className="text-2xl font-bold text-blue-700 mb-2">{event.title}</h2>
       <p className="text-blue-900">{event.description}</p>

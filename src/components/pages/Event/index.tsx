@@ -39,7 +39,7 @@ const Event = () => {
       </header>
       {/* コンテンツ */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pt-16">
-        <div className="max-w-7xl w-1/2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg p-8 mb-10">
+        <div className="max-w-7xl w-full sm:w-11/12 md:w-3/4 lg:w-1/2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg p-8 mb-10">
           <h1 className="text-3xl font-bold text-blue-800 mb-4">
             {event.title}
           </h1>
